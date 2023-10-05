@@ -98,6 +98,6 @@ public class test1 {
 		System.out.println("변경할 패스워드 입력");
 		user.changePw();
 		user.Print();
-		
+		user.Print();
 	}
 }
