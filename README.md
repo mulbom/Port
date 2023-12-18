@@ -9,7 +9,7 @@ solved 문제 풀이
 
 해야할 것
 포트폴리오 모아둘 tstory나 블로그 만들기
-개인 프로젝트 : #3776AB
+개인 프로젝트 : <img src="https://img.shields.io/badge/?style=flat&logo=#3776AB&logoColor=white"/>
 
 23년 목표
 23년도 말까지 solved 골드5 달성하기 - 12.04 달성
