@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <p id="a">asdfds</p>
+    <script>
+        /*
+                자바스크립트 코드 적용 방법
+            1.내부 js >> <script>태그 추가해서 js 코드 포함시키는 방법
+            2.외부 js >> 외부 '.js' 파일을 만들어두고 파일에 포함시키는 방법
+            
+                출력문
+            1.alert("경고창 출력");
+            2.console.log("콘솔 상에서 출력");
+            3.document.write("HTML 페이지 상에 출력"); << 디버깅 용도로 주로 사용
+            4.innerHTML
+
+                자료형
+            1.Number 
+            2.String 
+            3.Boolean
+
+                변수 및 상수 선언
+            1.let       >> 상수의 경우 값 변경이 불가능
+            2.const     >> 상수의 경우 값 변경이 불가능
+        */
+        console.log("999*999의 결과는 " + 999 * 999 + "입니다.")
+        console.log(`999*999의 결과는 ${999 * 999}입니다.`)
+        document.write("afsd")
+        let ar = document.getElementById("a") //변수 ar - id가 "a"인 요소 연결
+        ar.innerHTML = "tweqr"
+
+        let n = 99 * 99
+        const c = "plvmxzvlfs";
+        console.log(n)
+        console.log(c)
+    </script>
+    <script>
+        let name = prompt("이름을 입력하세요")
+        let input = prompt("이름을 입력하세요")
+        let age = Number(input)
+        let tf = confirm("남 = 확인 , 여 = 취소")
+        produce = []
+        let gender
+        tf === true ? gender = 'Male' : gender = 'Female'
+        produce.push(name)
+        produce.push(age)
+        produce.push(gender)
+        document.write(`
+            이름 : ${produce[0]}<br>
+            나이 : ${produce[1]}<br> 
+            성별 : ${produce[2]}<br>
+        `)
+    </script>
+    <script>
+        /*
+                배열
+            js 같은 경우엔, 자료형의 제약이 없고 공간의 제약 없음
+            배열 이름이랑 "이게 배열이다"라는 겂만 명시하면 사용에 지장없음
+
+        */
+
+        let introduce = []
+        //임의의 위치를 지정해서 값을 삽입하는 것도 가능하다.
+        introduce[1] = "apple"
+        console.log(introduce[1])
+        //push를 이용해서 순차적으로 삽입도 가능
+        introduce.push("lee")
+        introduce.push(25)
+        introduce.push(false)
+    </script>
+    <script>
+        /*
+                입력문
+            1.prompt()      >>  문자형 타입 입력을 받는데에 사용
+                ex) prompt("질문") 
+            2.confirm()     >>  bool타입 입력 받는데에 사용
+                ex) confirm("질문")
+        */
+        let name = prompt("이름을 입력하세요")
+        console.log(name)
+        document.write(name)
+        let tf = confirm("남성이면 확인, 여성이면 취소를 눌러주세요.")
+        tf === true ? document.write("남성") : document.write("여성")
+        let input = prompt("나이를 입력하세요")
+        let age = Number(input)
+        console.log(input)
+        document.write(age)
+    </script>
+    <script>
+        /*
+                연산자
+            1.산술연산자 >> +,-,*,/,%
+            2.대입연산자 >> =
+            3.비교연산자 >> <,>,<=,>=
+                ==, != >> 값이 같다, 다르다
+                ===, !== >> 값과 타입이 모두 같다, 값 또는 타입이 다르다
+            4.논리연산자 >> &&, ||, !
+            5.삼항연산자 >> ? >> if와 else 같이 쓰는 연산자
+                >> [조건식] ? [참 명령어] : [거짓 명령어]
+            typeof() >> 특정 값의 자료형 반환
+
+                강제 형변환
+            ( type( 값 ) )
+        */
+        let n1 = 100;
+        let n2 = 200;
+        n1 > n2 ? console.log(n1) : console.log(n2)
+
+        document.write(`n1의 자료형은 ${typeof (n1)}`)
+        let tf = 10 * 1 === 10
+        document.write(`10*1은 10이다 ${tf}`)
+        let hello = "ㅎㅇ";
+        console.log(Boolean(hello))
+        
+</body >
+</html >
