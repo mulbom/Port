@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <script>
+        function FBO(n1, n2, a) {
+            if (a === '+') {
+                let result = n1 + n2
+                return result
+            } else if (a === '-') {
+                let result = n1 - n2
+                return result
+            } else if (a === '*') {
+                let result = n1 * n2
+                return result
+            } else if (a === '/') {
+                let result = n1 / n2
+                return result
+            } else if (a === '%') {
+                let result = n1 % n2
+                return result
+            }
+        }
+        while (true) {
+            let num1 = prompt("첫째 수")
+            let n1 = Number(num1)
+            let num2 = prompt("둘째 수")
+            let n2 = Number(num2)
+            let a = prompt("사칙연산 선택 +,-,*,/,% 중 택 1")
+            if (n1 === 0 && n2 === 0) {
+                break
+            } else {
+                confirm(`${n1} ${a} ${n2} = ${FBO(n1, n2, a)}`)
+            }
+        }
+    </script>
+</body>
+
+</html>
