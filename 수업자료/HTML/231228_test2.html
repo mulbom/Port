@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="jquery-3.7.1.min.js"></script>
+    <title>Document</title>
+    <style>
+
+    </style>
+</head>
+
+<body>
+    
+    <form>
+        <h3 style="display: inline-block;" id="h">asd</h3><br>
+        <input type="button" value="Hide" id="hide">
+        <input type="button" value="Show" id="show">
+        <input type="button" value="Toggle" id="toggle">
+        <script>
+            $(document).ready(function () {
+                $("#hide").click(function () {
+                    $("#h").fadeOut('slow');
+                    alert("ㅂㅇ")
+                });
+                $("#show").click(function () {
+                    $("#h").fadeIn('slow');
+                    alert("ㅎㅇ")
+                });
+                $("#toggle").click(function(){
+                    $("#h").fadeToggle('slow');
+                })
+            });
+        </script>
+    </form>
+
+</body>
+
+</html>
