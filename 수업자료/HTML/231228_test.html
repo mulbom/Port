@@ -1,0 +1,29 @@
+<!-- Q. form태그에서 mbti를 입력받아 function으로 연산하라-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <form>
+        <h1>MBTI를 입력하세요.</h1>
+        <label><input type="text" id="M" placeholder="외향적(E) / 내향적(I)" maxlength="1"></label><br>
+        <label><input type="text" id="B" placeholder="현실형(S) / 직관형(N)" maxlength="1"></label><br>
+        <label><input type="text" id="T" placeholder="감성적(F) / 이성적(T)" maxlength="1"></label><br>
+        <label><input type="text" id="I" placeholder="계획형(J) / 즉흥형(P)" maxlength="1"></label><br>
+        <input type="submit" value="제출하기" onclick="MBTI()">
+        <script>
+            function MBTI(){
+                let m=document.getElementById('M').value
+                let b=document.getElementById('B').value
+                let t=document.getElementById('T').value
+                let i=document.getElementById('I').value
+                let mbti=m+b+t+i
+                document.write(`=> 당신의 MBTI는 ${mbti}입니다.`)
+            }
+        </script>
+    </form>
+</body>
+</html>
