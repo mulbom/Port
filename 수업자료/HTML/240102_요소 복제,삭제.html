@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="jquery-3.7.1.min.js"></script>
+    <title>Document</title>
+    <style>
+        #pa {
+            background-color: chocolate;
+            height: 100px;
+        }
+        #pa2 {
+            background-color: lightcoral;
+            height: 100px;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>clone 메소드</h3>
+    <ul id="box">
+        <li id="l1">첫번째 li</li>
+        <li>두번째 li</li>
+    </ul>
+    <button id="copy">요소 복제</button>
+    <button id="del">요소 삭제</button>
+    <br>
+
+    <h3>remove 메소드</h3>
+    <div id="r1">첫번째 내용</div>
+    <div id="r2">두번째 내용</div>
+    <div id="r3">세번째 내용</div>
+    <br>
+    <button id="rm">remove</button>
+    <br>
+
+    <h3>empty 메소드</h3>
+    <div id="pa">
+        <div id="first">첫번째 내용</div>
+        <div id="second">두번째 내용</div>
+        <div id="third">세번째 내용</div>
+    </div>
+    <br>
+    <button id="et">empty</button>
+    <br>
+
+    <h3>detach 메소드</h3>
+    <div id="pa2">
+        <div id="dt1">첫번째 내용</div>
+        <div id="dt2">두번째 내용</div>
+        <div id="dt3">세번째 내용</div>
+    </div>
+    <br>
+    <button id="dt">detach</button>
+    <button id="rw">rewind</button>
+    <br>
+    <script>
+        /*
+                요소 복제 / 삭제
+            요소 복제 >> clone()
+            요소 삭제 >> remove(), empty(), detach()
+
+            remove  - 특정 조건에 적합한 요소 삭제
+
+            empty   - 선택된 요소의 자식 요소를 삭제
+            
+            detach  - 특정 조건에 적합한 요소 삭제
+                    - (삭제를 수행한 뒤, 삭제한 html코드를 반환)
+        */
+        let data;
+        $(function () {
+            $("#copy").click(function () {
+                let l = $("#l1").clone()
+                $("#box").append(l)
+            })
+            $("#del").click(function () {
+                $("li").remove("#l1")
+            })
+            $("#rm").click(function () {
+                $("div").remove("#r1")
+            })
+            $("#et").click(function () {
+                $("#pa").empty()
+            })
+            $("#dt").click(function () {
+                data = $("#dt1, #dt2").detach()
+            })
+            $("#rw").click(function () {
+                $("#pa2").append(data)
+            })
+        })
+    </script>
+</body>
+
+</html>
