@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="jquery-3.7.1.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <h3 id="tex"></h3>
+    <script>
+        const fName = [
+            "Name",
+            "Age",
+            "Blood",
+            "City",
+            "Company",
+            "Height",
+            "Mont",
+            "Day",
+            "Work",
+            "Hungry"
+        ]
+        fetch("https://starfall-yuna.github.io/super-duper-computing-machine/json.json")
+            .then(Response => {
+                if (!Response.ok) {
+                    throw new Error(`${response.status} - ${response.statusText}`);
+                }
+                return Response.json()
+            })
+            .then(data => {
+                let rt = document.getElementById("tex")
+                let op = ''
+                for (let i = 0; i < 10; i++) {
+                    op += `${fName[i]}: ${data[fName[i]]}<br>`
+                }
+                rt.innerHTML = op
+            })
+            .catch(error => {
+                alert("Error")
+            })
+    </script>
+</body>
+
+</html>
