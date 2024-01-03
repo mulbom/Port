@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="jquery-3.7.1.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <h3>아래는 웹에 있는 json 파일에서 불러온 값입니다.</h3>
+    <p id="tt"></p>
+    <script>
+        $.ajax({    // jq 상에서 ajax 통신하는 데에 사용되는 메소드
+            url: "https://starfall-yuna.github.io/super-duper-computing-machine/json.json",
+            method: "GET",
+            dataType: "json",    // datatype : ""에 맞춰 파싱하기위해
+            success: function (data) { // data : 요청한 파일을 파싱할 결과값
+                //  p 태그에 json 파일 중 일부를 출력할 메소드
+                let para = $("#tt")
+                para.text(data["Name"])
+            },
+            error: function (jqXHR, textStatus, errorThrow) {
+                console.log("error")
+            }
+        })
+    </script>
+</body>
+
+</html>
