@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="jquery-3.7.1.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="div1">여기를 누르면 값이 변경됩니다</div><br>
+    <p id="p1">수요일아침입니다.<span id="sp1">오늘도 파이팅해봅시다!!!</span></p><br>
+    <br>
+    <input type="text" id="ip1"/><button id="bt1">입력값 확인</button><br><hr><br>
+    <button id="add">요소추가</button>
+    <button id="del">요소제거</button>
+    <button id="emp">요소비우기</button>
+    <ul id="li1">
+
+    </ul>
+    <script>
+        /*
+            24.01.02 수업 내용 review
+
+                    DOM
+            document의 준말, html 통해 만들어진 페이지
+                    get,set
+            text(), html(), val(), attr()
+                    요소조작
+            추가, 삭제, 복제, 대체
+        */
+        $(function () {
+            $("#div1").dblclick(function(){
+                $("#div1").text("변경되었습니다.")
+            })
+            $("#p1").click(function () {
+                alert($("#p1").text())    // 요소에 있는 텍스트만 반환   
+            })
+            $("#sp1").click(function () {
+                alert($("#p1").html())    // 요소의 html 코드 반환
+                $("#p1").html("<span>수요일아침입니다.<span>오늘도 파이팅해봅시다!!!</span></span>")
+            })
+            $("#bt1").click(function(){
+                alert($("#ip1").val())    // 실 사용자가 입력한 값 반환
+                $("#ip1").val("비온다")
+                $("#ip1").attr("style", "background-color: cyan")
+            })
+            $("#ip1").focus(function(){
+                alert("입력 타입 : "+$("#ip1").attr("type"))
+            })
+            $("#add").click(function(){
+                $("#li1").append("<li>잠온다</li>")
+                $("#li1").after("<li>잠온다아</li>")
+                $("#li1").before("<li>잠온다아아</li>")
+            })
+            $("#del").click(function(){
+                $("li").remove()
+            })
+            $("#emp").click(function(){
+                $("ul").empty()
+            })
+        })
+    </script>
+</body>
+
+</html>
