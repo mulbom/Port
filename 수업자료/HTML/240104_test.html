@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="jquery-3.7.1.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <h1>MBTI를 선택하세요.</h1>
+    <label><input type="radio" name="EI" value="E" id="E">E</label>
+    <label><input type="radio" name="EI" value="I" id="I">I</label>
+    <br>
+    <label><input type="radio" name="SN" value="S" id="S">S</label>
+    <label><input type="radio" name="SN" value="N" id="N">N</label>
+    <br>
+    <label><input type="radio" name="TF" value="T" id="T">T</label>
+    <label><input type="radio" name="TF" value="F" id="F">F</label>
+    <br>
+    <label><input type="radio" name="JP" value="J" id="J">J</label>
+    <label><input type="radio" name="JP" value="P" id="P">P</label>
+    <br>
+    <input type="button" value="제출" onclick="checkmbti()">
+    <br>
+    <h3 id="ttt"></h3>
+    <script>
+        function checkmbti() {
+            //let a = document.getElementById("id").checked?"true-ans":"false-ans"
+            let m = document.querySelector('input[name="EI"]:checked').value
+            let b = document.querySelector('input[name="SN"]:checked').value
+            let t = document.querySelector('input[name="TF"]:checked').value
+            let i = document.querySelector('input[name="JP"]:checked').value
+            let mbti = m + b + t + i
+            MBTIRIN(mbti)
+        }
+        function MBTIRIN(mbti) {
+            fetch("https://mulbom.github.io/-/240104html_test.json")
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`${response.status} - ${response.statusText}`);
+                    }
+                    return response.json()
+                })
+                .then(data => {
+                    let result = data[mbti]
+                    let rt = document.getElementById("ttt")
+                    rt.textContent = mbti + " : " + result
+                    let tb = document.getElementById("tb")
+                  
+                })
+                .catch(error => {
+                    alert("Error")
+                })  
+        }
+    </script>
+</body>
+
+</html>
