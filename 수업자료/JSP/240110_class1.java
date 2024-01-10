@@ -55,3 +55,4 @@ public class studentDAO {
 		return result;
 	}
 }
+// https://github.com/mulbom/Port/blob/main/수업자료/JSP/240110_class2.jsp
