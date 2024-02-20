@@ -1,0 +1,26 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int a[10001]={0};
+int main(){
+    int n;
+    cin >> n;
+    
+    for(int i=0;i<n;i++){
+        int x;
+        cin >> x;
+        a[x] += 1;
+    }
+    
+    for(int i=0;i<=10000;i++){
+        for(int j=0;j<a[i];j++){
+            cout << i << "\n";
+        }
+    }
+    return 0;
+}
+
+// 수 정렬하기 1,2와 같이 sort를 사용하려고 수를 전부 받을 시 수 마다 4의 byte를 사용함으로 제한인 8mb를 초과하게 된다.
+// 따라서, 수를 저장하고 정렬하는 방식은 사용할 수 없음
