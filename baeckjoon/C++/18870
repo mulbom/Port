@@ -1,0 +1,33 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+int main() {
+    int n;
+    cin >> n;
+    vector<int> a(n);
+    for (int i = 0; i < n; i++) {
+        cin >> a[i];
+    }
+
+    vector<int> aa(a);
+    sort(aa.begin(), aa.end());
+    aa.erase(unique(aa.begin(), aa.end()), aa.end());
+    for (int i = 0; i < n; i++) {
+        auto aaa = lower_bound(aa.begin(), aa.end(), a[i]);
+        cout << aaa - aa.begin() << ' ';
+    }
+    return 0;
+}
+/*
+  * 중복 제거
+  - erase와 unique를 사용 중복 값 제거
+
+  * 본인보다 작은수 카운트
+  - lower_bound 통해 카운트
+
+  * 문제 해설
+  - https://www.acmicpc.net/board/view/124678
+  - 이해안됬는데 단박에 이해시켜주심
+*/
