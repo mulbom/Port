@@ -1,0 +1,23 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    int a, b, c, d, e;
+    cin >> a;
+    cin >> b;
+    cin >> c;
+    cin >> d;
+    cin >> e;
+
+    vector<int> n = { a,b,c,d,e };
+
+    sort(n.begin(), n.end());
+
+    cout << (a + b + c + d + e) / 5 << endl;
+    cout << n[2];
+
+    return 0;
+}
