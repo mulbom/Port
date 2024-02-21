@@ -1,0 +1,28 @@
+#include <iostream>
+#include <string>
+#include <unordered_map>
+using namespace std;
+int main() {
+	cin.tie(NULL);
+	ios_base::sync_with_stdio(false);
+
+	unordered_map<string, string> en;
+
+	int n,m;
+	cin >> n >> m;
+
+	string name;
+	string idx;
+	for (int i = 1; i <= n; i++) {
+		cin >> name;
+		idx = to_string(i);
+		en[idx] = name;
+		en[name] = idx;
+	}
+	for (int i = 1; i <= m; i++) {
+		cin >> name;
+		cout << en[name] << "\n";
+	}
+
+	return 0;
+}
