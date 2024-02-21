@@ -1,0 +1,22 @@
+#include <iostream> 
+#include <map> 
+using namespace std; 
+int main(){ 
+	cin.tie(NULL);
+	ios_base::sync_with_stdio(false);
+	map<string, string, greater<>> m;
+	int n;
+	cin >> n;
+	string a, b;
+	for (int i = 0; i < n; i++) {
+		cin >> a >> b;
+		m[a] = b;
+	}
+	map<string, string>::iterator c;
+	for (c = m.begin(); c != m.end(); c++) {
+		if (c->second == "enter") {
+			cout << c->first << "\n";
+		}
+	}
+	return 0; 
+}
