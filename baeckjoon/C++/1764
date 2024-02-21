@@ -1,0 +1,45 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+void SystemDefault() {
+	cin.tie(NULL);
+	ios_base::sync_with_stdio(false);
+}
+int main() {
+	SystemDefault();
+
+	int n, m;
+	cin >> n >> m;
+
+	vector<string> dbj(n);
+	
+	for (int i = 0; i < n; i++) {
+		cin >> dbj[i];
+	}
+
+	sort(dbj.begin(), dbj.end());
+
+	vector<string> ques;
+	string name;
+	
+	for (int i = 0; i < m; i++) {
+		cin >> name;
+		if (binary_search(dbj.begin(), dbj.end(), name)) {
+			ques.push_back(name);
+		}
+	}
+
+	sort(ques.begin(), ques.end());
+
+	cout << ques.size() << "\n";
+	for (int i = 0; i < ques.size(); i++) {
+		cout << ques[i] << "\n";
+	}
+
+	return 0;
+}
+
+// 이진탐색 활용
