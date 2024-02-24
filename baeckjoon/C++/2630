@@ -1,0 +1,58 @@
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+int paper[129][129];
+int white = 0, black = 0;
+
+void SystemDefault() {
+	cin.tie(NULL);
+	ios_base::sync_with_stdio(false);
+}
+
+void con(int a, int b, int n) {
+	int count = 0;
+	for (int i = a; i < a + n; i++) {
+		for (int j = b; j < b + n; j++) {
+			if (paper[i][j]) {
+				count++;
+			}
+		}
+	}
+	if (!count) {
+		white++;
+	}
+	else if (count == n * n) {
+		black++;
+	}
+	else {
+		con(a, b, n / 2);
+		con(a, b + n / 2, n / 2);
+		con(a + n / 2, b, n / 2);
+		con(a + n / 2, b + n / 2, n / 2);
+	}
+	return;
+}
+int main() {
+	SystemDefault();
+
+	int n;
+
+	memset(paper, 0, sizeof(paper));
+
+	cin >> n;
+
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			cin >> paper[i][j];
+		}
+	}
+
+	con(0, 0, n);
+	cout << white << "\n" << black << "\n";
+
+	return 0;
+}
+
+//memset 함수를 통해 paper를 초기화하기 위해 cstring을 사용
