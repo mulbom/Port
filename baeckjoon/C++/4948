@@ -1,0 +1,50 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void SystemDefault() {
+	cin.tie(NULL);
+	ios_base::sync_with_stdio(false);
+}
+
+bool primeNum(int n) {
+	if (n < 1) {
+		return false;
+	}
+	else if (n == 1) {
+		return true;
+	}
+	for (int i = 2; i * i <= n; i++) {
+		if (n % i == 0) {
+			return false;
+		}
+	}
+	return true;
+}
+
+int main() {
+	SystemDefault();
+	
+	int n;
+	while (1) {
+		int cnt = 0;
+		cin >> n;
+		if (n == 1) {
+			cnt++;
+		}
+		if (n == 0) {
+			break;
+		}
+		for (int i = n+1; i < n * 2; i++) {
+			if (primeNum(i)) {
+				cnt++;
+			}
+		}
+		cout << cnt << "\n";
+	}
+	
+	return 0;
+}
+
+// 1이 들어가면 왜 1이 나오는지 이해가 안됨
