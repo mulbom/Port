@@ -1,21 +1,42 @@
-# 디스코드 봇 만들어보기
-# 24.03.12
-# - 정상작동 확인
+import asyncio
+
 import discord
+
 from discord.ext import commands
-import youtube_dl
 
-intents = discord.Intents.default()
-intents.voice_states = True
-client = commands.Bot(command_prefix='!', intents=intents)
-#dicord.py 1.5v부터는 intents 지정필요
-#command 지정  ex>> !입장 , !퇴장, !(검색내용) ...
+@commands.command(aliases=['입장'])
+    async def join(self, ctx):
+        if ctx.author.voice and ctx.author.voice.channel:
+            channel = ctx.author.voice.channel
+            await ctx.send(f"지금 {channel.name} 채널로 갈게요.")
+            try:
+                if ctx.voice_client is not None:
+                    await ctx.voice_client.move_to(channel)
+                else:
+                    await channel.connect()
+                print("음성 채널 정보:", ctx.author.voice)
+                print("음성 채널 이름:", ctx.author.voice.channel)
+            except Exception as e:
+                print("에러 발생:", e)
+                await ctx.send("채널에 연결하는 중에 오류가 발생했습니다.")
+        else:
+            await ctx.send("어디에 계신지 모르겠어요.")
 
-#봇이 준비 되었을 때의 이벤트 핸들러
-@client.event
+@commands.command(aliases=['나가기'])
+    async def out(self, ctx):
+        if ctx.voice_client is not None:
+            await ctx.voice_client.disconnect()
+            await ctx.send("안녕히 계세요.")
+        else:
+            await ctx.send("이미 밖이에요")
+
+
+@bot.event
 async def on_ready():
-    print('Bot is ready.')
-    # 정상 실행 확인용
+    await discord.client.change_presence(status=discord.Status.online, activity=discord.Game("궁시렁 대기"))
+    print("봇 실행됨!")
+    print(discord.client.user.name)
+    print(discord.client.user.id)
 
 # 이벤트 핸들러
 @client.command()
@@ -27,26 +48,8 @@ async def 종료(ctx):
     await ctx.send("봇을 종료합니다.")
     await client.close()
 
-# 유튜브에서 음악 검색하여 재생하는 함수
-async def play_youtube(ctx, search_query):
-    if ctx.voice_client is None:
-        await join_voice_channel(ctx)
-
-    # 유튜브 검색 및 음악 재생
-    ydl_opts = {
-        'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '192',
-        }],
-    }
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(f"ytsearch:{search_query}", download=False)
-        if 'entries' in info:
-            url = info['entries'][0]['formats'][0]['url']
-            ctx.voice_client.play(discord.FFmpegPCMAudio(url, **ydl_opts))
-        else:
-            await ctx.send("검색 결과를 찾을 수 없습니다.")
-
+async def main():
+    async with bot:
+        await bot.start(Token)
+        
 client.run('사용할 봇의 토큰 값을 입력해주세요.')
