@@ -1,7 +1,7 @@
 21년 7월에 만들어 사용했던 디스코드 봇 새코드로 새로 태어나게 하기
 - 前유튜브 재생 음악봇
 
-pycharm, python, discord, youtube_dl
+pycharm, python, discord, youtube_dl, ffmpeg
 
 
 24.03.12 시작 - 정상 시동, Messege응답
