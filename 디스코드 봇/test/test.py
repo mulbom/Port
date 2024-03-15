@@ -1,10 +1,66 @@
+# This example requires the 'message_content' privileged intent to function.
+
 import asyncio
 
 import discord
-
+import youtube_dl
 from discord.ext import commands
 
-@commands.command(aliases=['입장'])
+Token = "ODY5MDg4MjY3MjM1MTAyNzMw.G-zsBj.nQd0pg_6Cuf4aZorZ_VmpuDF_6_eLkSbP_EfAs"
+# Suppress noise about console usage from errors
+youtube_dl.utils.bug_reports_message = lambda: ''
+
+ytdl_format_options = {
+    'format': 'bestaudio/best',
+    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+    'restrictfilenames': True,
+    'noplaylist': True,
+    'nocheckcertificate': True,
+    'ignoreerrors': False,
+    'logtostderr': False,
+    'quiet': True,
+    'no_warnings': True,
+    'default_search': 'auto',
+    'source_address': '0.0.0.0',  # bind to ipv4 since ipv6 addresses cause issues sometimes
+}
+
+ffmpeg_options = {
+    'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
+    'options': '-vn',
+}
+
+ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
+
+
+# youtube 음악과 로컬 음악의 재생을 구별하기 위한 클래스 작성.
+class YTDLSource(discord.PCMVolumeTransformer):
+    def __init__(self, source, *, data, volume=0.5):
+        super().__init__(source, volume)
+
+        self.data = data
+
+        self.title = data.get('title')
+        self.url = data.get('url')
+
+    @classmethod
+    async def from_url(cls, url, *, loop=None, stream=False):
+        loop = loop or asyncio.get_event_loop()
+        data = await loop.run_in_executor(None, lambda: ytdl.extract_info(url, download=not stream))
+
+        if 'entries' in data:
+            # take first item from a playlist
+            data = data['entries'][0]
+
+        filename = data['url'] if stream else ytdl.prepare_filename(data)
+        return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
+
+
+# 음악 재생 클래스. 커맨드 포함.
+class Music(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(aliases=['입장'])
     async def join(self, ctx):
         if ctx.author.voice and ctx.author.voice.channel:
             channel = ctx.author.voice.channel
@@ -22,7 +78,7 @@ from discord.ext import commands
         else:
             await ctx.send("어디에 계신지 모르겠어요.")
 
-@commands.command(aliases=['나가기'])
+    @commands.command(aliases=['나가기'])
     async def out(self, ctx):
         if ctx.voice_client is not None:
             await ctx.voice_client.disconnect()
@@ -30,7 +86,7 @@ from discord.ext import commands
         else:
             await ctx.send("이미 밖이에요")
 
-@commands.command()
+    @commands.command()
     async def play(self, ctx, *, url):
         """(사전 다운로드하지 않음)"""
         try:
@@ -48,25 +104,48 @@ from discord.ext import commands
             return await ctx.send("Not connected to a voice channel.")
 
         ctx.voice_client.source.volume = volume / 100
-        await ctx.send(f"Changed volume to {volume}%")
+        await ctx.send(f"볼륨을 {volume}%로 바꿨어요.")
 
     @commands.command()
     async def stop(self, ctx):
+        await ctx.send("가볼게요.")
         await ctx.voice_client.disconnect()
 
     @commands.command()
     async def pause(self, ctx):
         if ctx.voice_client.is_paused() or not ctx.voice_client.is_playing():
-            await ctx.send("음악이 이미 일시 정지 중이거나 재생 중이지 않습니다.")
+            await ctx.send("음악이 멈춰져있거나 없어요.")
 
         ctx.voice_client.pause()
 
     @commands.command()
     async def resume(self, ctx):
         if ctx.voice_client.is_playing() or not ctx.voice_client.is_paused():
-            await ctx.send("음악이 이미 재생 중이거나 재생할 음악이 존재하지 않습니다.")
+            await ctx.send("음악이 이미 재생 중이거나 재생할 음악이 없습니다.")
 
         ctx.voice_client.resume()
+
+    @play.before_invoke
+    async def ensure_voice(self, ctx):
+        if ctx.voice_client is None:
+            if ctx.author.voice:
+                await ctx.author.voice.channel.connect()
+            else:
+                await ctx.send("You are not connected to a voice channel.")
+                raise commands.CommandError("Author not connected to a voice channel.")
+        elif ctx.voice_client.is_playing():
+            ctx.voice_client.stop()
+
+
+intents = discord.Intents.default()
+intents.message_content = True
+
+bot = commands.Bot(
+    command_prefix=commands.when_mentioned_or("!"),
+    description='Relatively simple music bot example',
+    intents=intents,
+)
+
 
 @bot.event
 async def on_ready():
@@ -75,18 +154,16 @@ async def on_ready():
     print(discord.client.user.name)
     print(discord.client.user.id)
 
-# 이벤트 핸들러
-@client.command()
-async def 안녕(ctx):
-    await ctx.send('안녕하세요!')
 
-@client.command()
-async def 종료(ctx):
-    await ctx.send("봇을 종료합니다.")
-    await client.close()
+@bot.command(aliases=['안녕'])
+async def say_hello(ctx):
+    await ctx.send('안녕하세요!')
 
 async def main():
     async with bot:
+        await bot.add_cog(Music(bot))
         await bot.start(Token)
-        
-client.run('사용할 봇의 토큰 값을 입력해주세요.')
+
+
+asyncio.run(main())
+
