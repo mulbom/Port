@@ -6,7 +6,7 @@ import discord
 import youtube_dl
 from discord.ext import commands
 
-Token = "ODY5MDg4MjY3MjM1MTAyNzMw.G-zsBj.nQd0pg_6Cuf4aZorZ_VmpuDF_6_eLkSbP_EfAs"
+Token = ""
 # Suppress noise about console usage from errors
 youtube_dl.utils.bug_reports_message = lambda: ''
 
