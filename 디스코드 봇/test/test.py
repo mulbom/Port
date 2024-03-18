@@ -6,8 +6,7 @@ import discord
 import youtube_dl
 from discord.ext import commands
 
-Token = ""
-# Suppress noise about console usage from errors
+Token = "토큰값"
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 ytdl_format_options = {
@@ -21,7 +20,7 @@ ytdl_format_options = {
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    'source_address': '0.0.0.0',  # bind to ipv4 since ipv6 addresses cause issues sometimes
+    'source_address': '0.0.0.0',
 }
 
 ffmpeg_options = {
@@ -32,7 +31,6 @@ ffmpeg_options = {
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
 
-# youtube 음악과 로컬 음악의 재생을 구별하기 위한 클래스 작성.
 class YTDLSource(discord.PCMVolumeTransformer):
     def __init__(self, source, *, data, volume=0.5):
         super().__init__(source, volume)
