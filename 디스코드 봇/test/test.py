@@ -91,7 +91,7 @@ class Music(commands.Cog):
             async with ctx.typing():
                 player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
                 ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
-                await ctx.send(f'현재 재생중: {player.title}')  # 이 줄을 try 블록 안으로 옮겼습니다
+                await ctx.send(f'현재 재생중: {player.title}') 
         except Exception as e:
             print("에러 : ", e)
             await ctx.send("음악을 재생하는 중에 오류가 발생했습니다.")
