@@ -1,16 +1,21 @@
 import asyncio
-
 import discord
 from datetime import datetime
 import youtube_dl
 from discord.ext import commands
 import random
+
+import requests
+import json
 #from googleapiclient.discovery import build
 
 
 
-Token = ""
+Token = "bot token"
 youtube_dl.utils.bug_reports_message = lambda: ''
+
+response = requests.get('https://api.weatherapi.com/v1/current.json?key=날씨api key&q=Taegu&aqi=yes')
+jsonObj = json.loads(response.text)
 
 ytdl_format_options = {
     'format': 'bestaudio/best',
@@ -214,14 +219,24 @@ class Talk(commands.Cog):
             for j in range(6):
                 Lotto_Num += str(Lotto[i][j]) + "\n" if j == 5 else str(Lotto[i][j]) + ", "
         return Lotto_Num
+
+    def get_Weather(self):
+        weather = '\n'
+        if 'current' in jsonObj and 'temp_c' in jsonObj['current'] and 'condition' in jsonObj['current'] and 'text' in \
+                jsonObj['current']['condition']:
+            weather += ('대구의 기온은 ' + str(jsonObj['current']['temp_c']) + '도이며, 날씨는 ' + jsonObj['current']['condition']['text'] + '입니다.')
+        else:
+            weather += ("날씨 정보를 가져올 수 없습니다.")
+        return weather
     def get_Ans(self, text):
         trim_text = text.replace(" ", "")
 
         ans = {
             '날짜': ':calendar: 오늘은 {}이에요.'.format(self.get_Date()),
-            '요일': ':calendar: 오늘은 {}이에요.'.format(self.get_Day()),
+            '요일': ':calendar_spiral: 오늘은 {}이에요.'.format(self.get_Day()),
             '시간': ':clock9: 현재 시간은 {}이에요.'.format(self.get_Time()),
-            '로또': '제 추천 번호는 {}입니다.'.format(self.send_Lotto(self.get_Lotto()))
+            '로또': '제 추천 번호는 {}입니다.'.format(self.send_Lotto(self.get_Lotto())),
+            '날씨': ':white_sun_small_cloud: 오늘의 날씨는 {}'.format(self.get_Weather())
         }
 
         if trim_text in ans:
@@ -259,4 +274,3 @@ async def main():
 
 
 asyncio.run(main())
-
