@@ -1,12 +1,16 @@
-# This example requires the 'message_content' privileged intent to function.
+# 시간,날짜 확인 명령어 추가 / youtube API 활용시 url 재생이 아닌 검색 후 최상단 표기물 재생 함수
 
 import asyncio
 
 import discord
+from datetime import datetime
 import youtube_dl
 from discord.ext import commands
+#from googleapiclient.discovery import build
 
-Token = "토큰값"
+
+
+Token = ""
 youtube_dl.utils.bug_reports_message = lambda: ''
 
 ytdl_format_options = {
@@ -30,6 +34,8 @@ ffmpeg_options = {
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
+#youtubeApiKey = ""
+#youtube = build('youtube', 'v3', developerKey=youtubeApiKey)
 
 class YTDLSource(discord.PCMVolumeTransformer):
     def __init__(self, source, *, data, volume=0.5):
@@ -91,7 +97,7 @@ class Music(commands.Cog):
             async with ctx.typing():
                 player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
                 ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
-                await ctx.send(f'현재 재생중: {player.title}') 
+                await ctx.send(f'현재 재생중: {player.title}')
         except Exception as e:
             print("에러 : ", e)
             await ctx.send("음악을 재생하는 중에 오류가 발생했습니다.")
@@ -134,6 +140,69 @@ class Music(commands.Cog):
         elif ctx.voice_client.is_playing():
             ctx.voice_client.stop()
 
+    """@commands.command() # **youtube api**
+    async def play(self, ctx, *, query):
+        try:
+            async with ctx.typing():
+                video_url = await self.search_video(query)
+                player = await YTDLSource.from_url(video_url, loop=self.bot.loop, stream=True)
+                ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
+                await ctx.send(f'현재 재생중: {player.title}')
+        except Exception as e:
+            print("에러 : ", e)
+            await ctx.send("실패")
+
+    async def search_video(self, query):
+        request = youtube.search().list(
+            part='snippet',
+            maxResults=1,
+            q=query,
+            type='video'
+        )
+        response = request.execute()
+        video_id = response['items'][0]['id']['videoId']
+        video_url = f"https://www.youtube.com/watch?v={video_id}"
+        return video_url
+    """
+
+class Talk(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author == self.bot.user:
+            return
+
+        if message.content.startswith('!'):
+            command = message.content[1:]
+            response = self.get_Ans(command)
+            await message.channel.send(response)
+
+    def get_Day(self):
+        Daylist = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
+        Day = Daylist[datetime.today().weekday()]
+        return Day
+
+    def get_Date(self):
+        return datetime.today().strftime("%Y년 %m월 %d일")
+
+    def get_Time(self):
+        return datetime.today().strftime("%H시 %M분")
+
+    def get_Ans(self, text):
+        trim_text = text.replace(" ", "")
+
+        ans = {
+            '날짜': ':calendar: 오늘은 {}이에요.'.format(self.get_Date()),
+            '요일': ':calendar: 오늘은 {}이에요.'.format(self.get_Day()),
+            '시간': ':clock9: 현재 시간은 {}이에요.'.format(self.get_Time())
+        }
+
+        if trim_text in ans:
+            return ans[trim_text]
+        else:
+            return "그런건 몰라요."
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -147,7 +216,7 @@ bot = commands.Bot(
 
 @bot.event
 async def on_ready():
-    await discord.client.change_presence(status=discord.Status.online, activity=discord.Game("궁시렁 대기"))
+    await discord.client.change_presence(status=discord.Status.online, activity=discord.Game("연결"))
     print("봇 실행됨!")
     print(discord.client.user.name)
     print(discord.client.user.id)
@@ -160,6 +229,7 @@ async def say_hello(ctx):
 async def main():
     async with bot:
         await bot.add_cog(Music(bot))
+        await bot.add_cog(Talk(bot))
         await bot.start(Token)
 
 
