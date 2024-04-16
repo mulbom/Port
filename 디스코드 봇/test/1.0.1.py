@@ -1,11 +1,10 @@
-# 시간,날짜 확인 명령어 추가 / youtube API 활용시 url 재생이 아닌 검색 후 최상단 표기물 재생 함수
-
 import asyncio
 
 import discord
 from datetime import datetime
 import youtube_dl
 from discord.ext import commands
+import random
 #from googleapiclient.discovery import build
 
 
@@ -156,7 +155,7 @@ class Music(commands.Cog):
         request = youtube.search().list(
             part='snippet',
             maxResults=1,
-            q=query,
+            q=query,  # 검색할 쿼리
             type='video'
         )
         response = request.execute()
@@ -190,13 +189,39 @@ class Talk(commands.Cog):
     def get_Time(self):
         return datetime.today().strftime("%H시 %M분")
 
+    def get_Lotto(self):
+        Lotto = [[0 for j in range(6)] for i in range(5)]
+        for i in range(5):
+            for j in range(6):
+                Lotto[i][j] = self.unique_Number(Lotto, i, j)
+        return Lotto
+
+    def unique_Number(self, Lotto, row, col):
+        number = random.randint(1, 45)
+        while self.Duplicate(Lotto, row, col, number):
+            number = random.randint(1, 45)
+        return number
+
+    def Duplicate(self, Lotto, row, col, number):
+        for i in range(row):
+            if Lotto[i][col] == number:
+                return True
+        return False
+
+    def send_Lotto(self, Lotto):
+        Lotto_Num = "\n"
+        for i in range(5):
+            for j in range(6):
+                Lotto_Num += str(Lotto[i][j]) + "\n" if j == 5 else str(Lotto[i][j]) + ", "
+        return Lotto_Num
     def get_Ans(self, text):
         trim_text = text.replace(" ", "")
 
         ans = {
             '날짜': ':calendar: 오늘은 {}이에요.'.format(self.get_Date()),
             '요일': ':calendar: 오늘은 {}이에요.'.format(self.get_Day()),
-            '시간': ':clock9: 현재 시간은 {}이에요.'.format(self.get_Time())
+            '시간': ':clock9: 현재 시간은 {}이에요.'.format(self.get_Time()),
+            '로또': '제 추천 번호는 {}입니다.'.format(self.send_Lotto(self.get_Lotto()))
         }
 
         if trim_text in ans:
