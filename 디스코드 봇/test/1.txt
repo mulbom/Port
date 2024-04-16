@@ -8,3 +8,4 @@ pycharm, python, discord, youtube_dl, ffmpeg
 24.03.13 - 음성채널 입장 및 퇴장
 24.03.14 - 재생 관련 함수
 24.03.15 - 간단한 수정
+24.04.16 - 날씨,날짜 함수 추가 / youtubeapi활용 재함수 추가
