@@ -14,7 +14,7 @@ import json
 Token = "bot token"
 youtube_dl.utils.bug_reports_message = lambda: ''
 
-response = requests.get('https://api.weatherapi.com/v1/current.json?key=날씨api key&q=Taegu&aqi=yes')
+response = requests.get('https://api.weatherapi.com/v1/current.json?key=weather api key&q=Taegu&aqi=yes')
 jsonObj = json.loads(response.text)
 
 ytdl_format_options = {
@@ -242,7 +242,7 @@ class Talk(commands.Cog):
         if trim_text in ans:
             return ans[trim_text]
         else:
-            return "그런건 몰라요."
+            pass
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -274,3 +274,4 @@ async def main():
 
 
 asyncio.run(main())
+
