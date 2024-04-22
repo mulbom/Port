@@ -11,10 +11,10 @@ import json
 
 
 
-Token = "디스코드 봇 토큰"
+Token = "bot token"
 youtube_dl.utils.bug_reports_message = lambda: ''
 
-response = requests.get('웨더 api 키')
+response = requests.get('weather api key')
 jsonObj = json.loads(response.text)
 
 ytdl_format_options = {
@@ -236,6 +236,7 @@ class Talk(commands.Cog):
             embed = self.get_Ans(command)
             if embed:
                 await message.channel.send(embed=embed)
+
     def get_Day(self):
         Daylist = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
         Day = Daylist[datetime.today().weekday()]
@@ -285,6 +286,11 @@ class Talk(commands.Cog):
         trim_text = text.replace(" ", "")
 
         ans = {
+            '만든이': discord.Embed(
+                title="만든이 정보",
+                description=f"NickName : Mulbom\nGit-Hub : https://github.com/mulbom\nE-mail : qudwls0315@gmail.com\nTistory : https://mulbom.tistory.com",
+                color=discord.Color.green()
+            ),
             '날짜': discord.Embed(
                 title=":calendar: 오늘은",
                 description=self.get_Date(),
@@ -317,6 +323,66 @@ class Talk(commands.Cog):
         else:
             pass
 
+class Help(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.help_pages = [
+            discord.Embed(
+                title="노래 도움말",
+                description="재생 : !play URL >> URL에 원하는 영상의 주소를 넣으면 됩니다.\n"
+                            "멈춤 : !stop or !pause\n"
+                            "pause시 이어서 재생 : !resume\n"
+                            "볼륨 조절 : !volume 1 ~ 100\n"
+                            "음성 채팅 진입 : !join >> 사용자가 음성채널에 진입한 상태여야합니다.\n"
+                            "음성 채팅 퇴장 : !stop or !out",
+                color=discord.Color.blue()
+            ),
+            discord.Embed(
+                title="질문 도움말",
+                description="금일 날씨 : !날씨\n"
+                            "금일 날짜 : !날짜\n"
+                            "현재 시간 : !시간\n"
+                            "금일 요일 : !요일\n"
+                            "알람 : !알람 1~n >> 초 단위로 입력 >> 다이렉트 메세지로 알람 경과 전송\n"
+                            "만든이 정보 : !만든이",
+                color=discord.Color.blue()
+            ),
+        ]
+        self.current_page = 0
+
+    @commands.command(name='도움말')
+    async def help(self, ctx):
+        await self.send_page(ctx)
+
+    async def send_page(self, ctx):
+        embed = self.help_pages[self.current_page]
+        message = await ctx.send(embed=embed)
+
+        # Add reactions for navigation
+        if self.current_page > 0:
+            await message.add_reaction("⬅️")
+        if self.current_page < len(self.help_pages) - 1:
+            await message.add_reaction("➡️")
+
+        # Wait for reaction from the user
+        def check(reaction, user):
+            return (
+                user == ctx.author
+                and str(reaction.emoji) in ["⬅️", "➡️"]
+                and reaction.message.id == message.id
+            )
+
+        reaction, _ = await self.bot.wait_for("reaction_add", check=check)
+
+        # Update current page based on reaction
+        if str(reaction.emoji) == "⬅️":
+            self.current_page = max(0, self.current_page - 1)
+        elif str(reaction.emoji) == "➡️":
+            self.current_page = min(len(self.help_pages) - 1, self.current_page + 1)
+
+        await message.delete()
+        await self.send_page(ctx)
+
 intents = discord.Intents.default()
 intents.message_content = True
 
@@ -334,6 +400,16 @@ async def on_ready():
     print(discord.client.user.name)
     print(discord.client.user.id)
 
+@bot.event
+async def on_guild_join(guild):
+        default = guild.text_channels[0]
+        embed = discord.Embed(
+            title="안녕하세요!",
+            description="멀보냥 봇 입니다.\n"
+                        "!도움말을 입력해 확인 후 사용해 보세요.",
+            color=discord.Color.green()
+        )
+        await default.send(embed=embed)
 
 @bot.command(aliases=['안녕'])
 async def say_hello(ctx):
@@ -344,6 +420,7 @@ async def main():
         await bot.add_cog(Music(bot))
         await bot.add_cog(Talk(bot))
         await bot.add_cog(Alarm(bot))
+        await bot.add_cog(Help(bot))
         await bot.start(Token)
 
 
