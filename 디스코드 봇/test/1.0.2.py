@@ -11,10 +11,10 @@ import json
 
 
 
-Token = "bot token"
+Token = "디스코드 봇 토큰"
 youtube_dl.utils.bug_reports_message = lambda: ''
 
-response = requests.get('https://api.weatherapi.com/v1/current.json?key=weather api key&q=Taegu&aqi=yes')
+response = requests.get('웨더 api 키')
 jsonObj = json.loads(response.text)
 
 ytdl_format_options = {
@@ -96,12 +96,16 @@ class Music(commands.Cog):
 
     @commands.command()
     async def play(self, ctx, *, url):
-        """(사전 다운로드하지 않음)"""
         try:
             async with ctx.typing():
                 player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
                 ctx.voice_client.play(player, after=lambda e: print(f'Player error: {e}') if e else None)
-                await ctx.send(f'현재 재생중: {player.title}')
+                embed = discord.Embed(
+                    title="재생 시작",
+                    description=f'현재 재생중: {player.title}',
+                    color=discord.Color.green()
+                )
+                await ctx.send(embed=embed)
         except Exception as e:
             print("에러 : ", e)
             await ctx.send("음악을 재생하는 중에 오류가 발생했습니다.")
@@ -112,7 +116,12 @@ class Music(commands.Cog):
             return await ctx.send("Not connected to a voice channel.")
 
         ctx.voice_client.source.volume = volume / 100
-        await ctx.send(f"볼륨을 {volume}%로 바꿨어요.")
+        embed = discord.Embed(
+            title="볼륨 조절",
+            description=f"볼륨을 {volume}%로 조절했어요.",
+            color=discord.Color.blue()
+        )
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def stop(self, ctx):
@@ -125,6 +134,12 @@ class Music(commands.Cog):
             await ctx.send("음악이 멈춰져있거나 없어요.")
 
         ctx.voice_client.pause()
+        embed = discord.Embed(
+            title="일시 정지",
+            description="음악을 일시 정지했어요.",
+            color=discord.Color.orange()
+        )
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def resume(self, ctx):
@@ -132,6 +147,12 @@ class Music(commands.Cog):
             await ctx.send("음악이 이미 재생 중이거나 재생할 음악이 없습니다.")
 
         ctx.voice_client.resume()
+        embed = discord.Embed(
+            title="재개",
+            description="음악을 다시 재생합니다.",
+            color=discord.Color.green()
+        )
+        await ctx.send(embed=embed)
 
     @play.before_invoke
     async def ensure_voice(self, ctx):
@@ -139,8 +160,8 @@ class Music(commands.Cog):
             if ctx.author.voice:
                 await ctx.author.voice.channel.connect()
             else:
-                await ctx.send("You are not connected to a voice channel.")
-                raise commands.CommandError("Author not connected to a voice channel.")
+                await ctx.send("음성 채널에 연결되어 있지 않아요.")
+                raise commands.CommandError("음성 채널에 연결되어 있지 않음.")
         elif ctx.voice_client.is_playing():
             ctx.voice_client.stop()
 
@@ -168,6 +189,38 @@ class Music(commands.Cog):
         video_url = f"https://www.youtube.com/watch?v={video_id}"
         return video_url
     """
+class Alarm(commands.Cog):
+    def __init__(self, bot):
+        self.bot = bot
+        self.alarms = {}
+
+    @commands.command()
+    async def 알람(self, ctx, time: int):
+        """알람을 설정합니다. 시간은 초 단위로 입력하세요."""
+        if time <= 0:
+            await ctx.send("양수의 시간을 입력해주세요.")
+            return
+
+        self.alarms[ctx.author.id] = time
+
+        embed = discord.Embed(
+            title="알람 설정",
+            description=f"{time}초 후에 알람이 울립니다!",
+            color=discord.Color.blue()
+        )
+        await ctx.send(embed=embed)
+
+        await asyncio.sleep(time)
+
+        embed = discord.Embed(
+            title="알람",
+            description="알람이 울렸습니다!",
+            color=discord.Color.green()
+        )
+        await ctx.author.send(embed=embed)
+
+        del self.alarms[ctx.author.id]
+        
 
 class Talk(commands.Cog):
     def __init__(self, bot):
@@ -180,9 +233,9 @@ class Talk(commands.Cog):
 
         if message.content.startswith('!'):
             command = message.content[1:]
-            response = self.get_Ans(command)
-            await message.channel.send(response)
-
+            embed = self.get_Ans(command)
+            if embed:
+                await message.channel.send(embed=embed)
     def get_Day(self):
         Daylist = ['월요일', '화요일', '수요일', '목요일', '금요일', '토요일', '일요일']
         Day = Daylist[datetime.today().weekday()]
@@ -224,7 +277,7 @@ class Talk(commands.Cog):
         weather = '\n'
         if 'current' in jsonObj and 'temp_c' in jsonObj['current'] and 'condition' in jsonObj['current'] and 'text' in \
                 jsonObj['current']['condition']:
-            weather += ('대구의 기온은 ' + str(jsonObj['current']['temp_c']) + '도이며, 날씨는 ' + jsonObj['current']['condition']['text'] + '입니다.')
+            weather += ('기온은 ' + str(jsonObj['current']['temp_c']) + '도이며, 날씨는 ' + jsonObj['current']['condition']['text'] + '입니다.')
         else:
             weather += ("날씨 정보를 가져올 수 없습니다.")
         return weather
@@ -232,11 +285,31 @@ class Talk(commands.Cog):
         trim_text = text.replace(" ", "")
 
         ans = {
-            '날짜': ':calendar: 오늘은 {}이에요.'.format(self.get_Date()),
-            '요일': ':calendar_spiral: 오늘은 {}이에요.'.format(self.get_Day()),
-            '시간': ':clock9: 현재 시간은 {}이에요.'.format(self.get_Time()),
-            '로또': '제 추천 번호는 {}입니다.'.format(self.send_Lotto(self.get_Lotto())),
-            '날씨': ':white_sun_small_cloud: 오늘의 날씨는 {}'.format(self.get_Weather())
+            '날짜': discord.Embed(
+                title=":calendar: 오늘은",
+                description=self.get_Date(),
+                color=discord.Color.blue()
+            ),
+            '요일': discord.Embed(
+                title=":calendar_spiral: 오늘은",
+                description=self.get_Day(),
+                color=discord.Color.blue()
+            ),
+            '시간': discord.Embed(
+                title=":clock9: 지금은",
+                description=self.get_Time(),
+                color=discord.Color.blue()
+            ),
+            '로또': discord.Embed(
+                title="제 추천 번호는",
+                description=self.send_Lotto(self.get_Lotto()),
+                color=discord.Color.blue()
+            ),
+            '날씨': discord.Embed(
+                title=":white_sun_small_cloud: 오늘의 날씨는",
+                description=self.get_Weather(),
+                color=discord.Color.blue()
+            )
         }
 
         if trim_text in ans:
@@ -270,6 +343,7 @@ async def main():
     async with bot:
         await bot.add_cog(Music(bot))
         await bot.add_cog(Talk(bot))
+        await bot.add_cog(Alarm(bot))
         await bot.start(Token)
 
 
