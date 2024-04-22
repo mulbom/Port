@@ -9,3 +9,4 @@ pycharm, python, discord, youtube_dl, ffmpeg, weather api, youtube api
 24.03.14 - 재생 관련 함수
 24.03.15 - 간단한 수정
 24.04.16 - 날씨,날짜 함수 추가 / youtubeapi활용 재함수 추가
+24.04.22 - 알람 함수 추가 / 응답 형태 > 카드 형태로 변경
